@@ -21,11 +21,33 @@ const fetchMyIP = (callback) => {
       callback(null, IP.ip);
       return;
     } else {
-      const msg = `Status Code ${response.statusCode} when fetching IP. Response: ${body}`;
+      const msg = `Status Code ${status.statusCode} when fetching IP. Response: ${body}`;
       callback(Error(msg), null);
       return;
     }
   });
 };
 
-module.exports = { fetchMyIP };
+const fetchCoordsByIP = (ip, callback) => {
+  // https://freegeoip.app/{format}/{IP_or_hostname}
+  request('https://freegeoip.app/json/' + ip, (error, status, body) => {
+    if (error) {
+      callback(error, null);
+      return;
+    }
+    if (status.statusCode === 200) {
+      const data = JSON.parse(body);
+      callback(null, {"latitude": data.latitude, "longitude": data.longitude});
+      return;
+    } else {
+      const msg = `Status Code ${status.statusCode} when fetching IP. Response: ${body}`;
+      callback(Error(msg), null);
+      return;
+    }
+  });
+};
+
+module.exports = {
+  fetchMyIP,
+  fetchCoordsByIP
+};
