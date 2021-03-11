@@ -14,10 +14,16 @@ const fetchMyIP = (callback) => {
   request('https://api.ipify.org?format=json', (error, status, body) => {
     if (error) {
       callback(error, null);
+      return;
     }
     if (status.statusCode === 200) {
       const IP = JSON.parse(body);
       callback(null, IP.ip);
+      return;
+    } else {
+      const msg = `Status Code ${response.statusCode} when fetching IP. Response: ${body}`;
+      callback(Error(msg), null);
+      return;
     }
   });
 };
